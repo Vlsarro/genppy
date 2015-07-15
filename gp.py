@@ -103,11 +103,33 @@ gtw = fwrapper(isgreater, 2, 'isgreater')
 flist = [addw, mulw, ifw, gtw, subw]  # list of all the functions for random choosing
 
 
-def exampletree():
+"""def exampletree():
     return node(ifw, [
         node(gtw, [paramnode(0), constnode(3)]),
         node(addw, [paramnode(1), constnode(5)]),
         node(subw, [paramnode(1), constnode(2)]),
     ])
+"""
+
+
+def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
+
+    """
+    This function creates a node with a random function and then looks to see how
+    many child nodes this function requires. For every child node required, the
+    function calls itself to create a new node.
+    :param pc: number of parameters that the tree will take as input
+    :param fpr: gives the probability that the new node created will be a function node
+    :param ppr: gives that probability that it will be a paramnode if it is not a function node
+    """
+    if random() < fpr and maxdepth > 0:
+        f = choice(flist)
+        children = [makerandomtree(pc, maxdepth - 1, fpr, ppr)
+                    for i in range(f.childcount)]
+        return node(f, children)
+    elif random() < ppr:
+        return paramnode(randint(0, pc - 1))
+    else:
+        return constnode(randint(0, 10))
 
 
