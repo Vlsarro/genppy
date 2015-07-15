@@ -133,3 +133,30 @@ def makerandomtree(pc, maxdepth=4, fpr=0.5, ppr=0.6):
         return constnode(randint(0, 10))
 
 
+def scorefunction(tree, dataset):
+    """
+    This function checks every row in dataset, calculating the output from the function
+    and comparing it to the real result. It adds up all the diffences, giving lower
+    values for better programs.
+
+    Return value 0 indicates that the program got every result correct
+    """
+    dif = 0
+    for data in dataset:
+        v = tree.evaluate([data[0], data[1]])
+        dif += abs(v - data[2])
+    return dif
+
+
+def mutate(tree, pc, probchange=0.1):
+    """
+    Function begins at the top of the tree and decides whether the node should be
+    altered. If not, it calls mutate on the child nodes of the tree.
+    """
+    if random() < probchange:
+        return makerandomtree(pc)
+    else:
+        result = deepcopy(tree)
+        if isinstance(tree, node):
+            result.children = [mutate(c, pc, probchange) for c in tree.children]
+        return result
